@@ -1,4 +1,7 @@
 import argparse
+from time import sleep
+# from msvcrt import getch
+
 
 import sudoku as sud
 
@@ -75,12 +78,13 @@ class SudokuUI(Frame):
                     x = MARGIN + j * SIDE + SIDE / 2
                     y = MARGIN + i * SIDE + SIDE / 2
                     original = self.game.start_puzzle[i][j]
-                    color = "black" if answer == original else "sea green"
+                    color = "black" if answer == original else "blue"
                     self.canvas.create_text(
                         x, y, text=answer, tags="numbers", fill=color
                     )
 
     def __draw_cursor(self):
+    	# removes highlighted red region
         self.canvas.delete("cursor")
         if self.row >= 0 and self.col >= 0:
             x0 = MARGIN + self.col * SIDE + 1
@@ -94,18 +98,33 @@ class SudokuUI(Frame):
 
     def __draw_victory(self):
         # create a oval (which will be a circle)
-        x0 = y0 = MARGIN + SIDE * 2
-        x1 = y1 = MARGIN + SIDE * 7
+        x0 = y0 = MARGIN + SIDE * 3.5
+        x1 = y1 = MARGIN + SIDE * 5.5
         self.canvas.create_oval(
             x0, y0, x1, y1,
-            tags="victory", fill="dark orange", outline="orange"
+            tags="victory", fill="dark green", outline="orange"
         )
         # create text
         x = y = MARGIN + 4 * SIDE + SIDE / 2
         self.canvas.create_text(
             x, y,
             text="You win!", tags="victory",
-            fill="white", font=("Arial", 32)
+            fill="white", font=("Arial", 24)
+        )
+    def __draw_mistake(self):
+        # create a oval (which will be a circle)
+        x0 = y0 = MARGIN + SIDE * 3.5
+        x1 = y1 = MARGIN + SIDE * 5.5
+        self.canvas.create_oval(
+            x0, y0, x1, y1,
+            tags="mistake", fill="dark orange", outline="orange"
+        )
+        # create text
+        x = y = MARGIN + 4 * SIDE + SIDE / 2
+        self.canvas.create_text(
+            x, y,
+            text="That's a mistake!!", tags="mistake",
+            fill="white", font=("Arial", 12)
         )
 
     def __cell_clicked(self, event):
@@ -129,15 +148,40 @@ class SudokuUI(Frame):
         self.__draw_cursor()
 
     def __key_pressed(self, event):
+    	# print(int(event.char))
+    	if event.char == u'\uf700':
+    		self.row -= 1
+    		self.__draw_cursor()
+    	if event.char == u'\uf701':
+    		self.row += 1
+    		self.__draw_cursor()
+    	if event.char == u'\uf702':
+    		self.col -= 1
+    		self.__draw_cursor()
+    	if event.char == u'\uf703':
+    		self.col += 1
+    		self.__draw_cursor()
+    	if event.char == '\x7f':
+    		self.game.puzzle[self.row][self.col] = ""
+    		self.__draw_puzzle()
         if self.game.game_over:
             return
-        if self.row >= 0 and self.col >= 0 and event.char in "1234567890":
+        if self.row >= 0 and self.col >= 0 and event.char in "123456789":
             self.game.puzzle[self.row][self.col] = int(event.char)
-            self.col, self.row = -1, -1
-            self.__draw_puzzle()
-            self.__draw_cursor()
-            if self.game.check_win():
-                self.__draw_victory()
+            if sud.check_sudoku(self.game.puzzle) == False:
+            	self.__draw_mistake()
+            	# self.__draw_puzzle()
+            	# self.__draw_cursor()
+            	# sleep(2)
+            	# self.canvas.delete("mistake")
+
+            else:# print("MISTAKE")
+	            self.__draw_puzzle()
+	            self.__draw_cursor()
+	            if self.game.check_win():
+	            	self.col, self.row = -10,-10
+	            	self.__draw_cursor()
+	                self.__draw_victory()
 
     def __clear_answers(self):
         self.game.start()
@@ -146,16 +190,19 @@ class SudokuUI(Frame):
 
     def __solve(self):
     	# print("we need to figure this out")
-    	self.game.puzzle = sud.sudoku_solver(self.game.puzzle)
+    	# self.game.puzzle = sud.sudoku_solver(self.game.puzzle)
+    	sol = sud.sudoku_solver(self.game.puzzle)
+    	if sol != None:
+    		self.game.puzzle = sol
 
     	self.__draw_puzzle()
     	if self.game.check_win():
             self.__draw_victory()
 
     def __hint(self):
-    	print("we need to figure this out")
-
-    	self.game.puzzle = sud.one_step(self.game.puzzle)
+    	sol = sud.one_step(self.game.puzzle)
+    	if sol != None:
+    		self.game.puzzle = sol
 
     	self.__draw_puzzle()
     	if self.game.check_win():

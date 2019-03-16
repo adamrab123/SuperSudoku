@@ -77,12 +77,12 @@ def solve(grid):
         updated = False
 
         if check_sudoku(grid) == False:
-            return False
+            return None
 
         for i in range(len(grid)):
             for j in range(len(grid)):
                 if len(pos[i][j]) == 0 and grid[i][j] == 0:
-                    return False
+                    return None
                 if len(pos[i][j]) == 1:
                     grid[i][j] = pos[i][j][0]
                     updated = True
@@ -103,12 +103,12 @@ def solve(grid):
 def one_step(grid):
     pos = determinePossibilities(grid)
     if check_sudoku(grid) == False:
-        return False # means that inputted grid is bad
+        return None # means that inputted grid is bad
 
     for i in range(len(grid)):
         for j in range(len(grid)):
             if len(pos[i][j]) == 0 and grid[i][j] == 0:
-                return False # means that inputted grid is bad
+                return None # means that inputted grid is bad
             if len(pos[i][j]) == 1:
                 grid[i][j] = pos[i][j][0]
                 return grid
@@ -195,12 +195,12 @@ example_sudoku = [
     [7, 0, 3, 0, 1, 8, 0, 0, 0]
 ]
 
-solution = sudoku_solver(example_sudoku)
-solution = one_step(example_sudoku)
+# solution = sudoku_solver(example_sudoku)
+# solution = one_step(example_sudoku)
 
 # solving = example_sudoku
 # while not solved(solving):
 #     solving = one_step(solving)
 
-print(solution)
+# print(solution)
 
