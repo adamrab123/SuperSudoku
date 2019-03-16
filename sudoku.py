@@ -1,103 +1,6 @@
 from collections import Counter
 
-def check_dups(l):
-    counts = Counter()
-    for cell in l:
-        if cell != 0: counts[cell] += 1
-        if cell > 9 or counts[cell] > 1: return False
-    return True
-
-def check_sudoku(grid):
-    if len(grid) != 9: return False
-    if sum(len(row) == 9 for row in grid) != 9: return False
-    for row in grid:
-        if not check_dups(row): return False
-    return True
-
-def determine_rows(grid, i):
-    ret = []
-    for j in grid[i]:
-        if j != 0:
-            ret.append(j)
-    return ret
-
-def determine_cols(grid, i):
-    ret = []
-    for j in range(len(grid)):
-        if grid[j][i] != 0:
-            ret.append(grid[j][i])
-    return ret
-
-def sudoku_solver(grid):
-    solved_grid = solve(grid)
-    return solved_grid
-
-def solve(grid):
-    while not solved(grid):
-        pos = determinePossiblities(grid)
-        # first look for positions that only have 1 possibility
-        updated = False
-
-        if check_sudoku(grid) == False:
-            return False
-
-        for i in range(len(grid)):
-            for j in range(len(grid)):
-                if len(pos[i][j]) == 0 and grid[i][j] == 0:
-                    return False
-                if len(pos[i][j]) == 1:
-                    grid[i][j] = pos[i][j][0]
-                    updated = True
-        if not updated:
-            # check one path...
-            for i in range(len(grid)):
-                for j in range(len(grid)):
-                    if grid[i][j] == 0:
-                        for xxx in pos[i][j]:
-                            grid[i][j] = xxx
-                            temp = solve(grid)
-                            if temp:
-                                return grid
-                            else:s
-                        grid[i][j] = 0
-    return grid
-
-def one_step(grid):
-    pos = determinePossibilities(grid)
-    if check_sudoku(grid) == False:
-        return False # means that inputted grid is bad
-
-    for i in range(len(grid)):
-        for j in range(len(grid)):
-            if len(pos[i][j]) == 0 and grid[i][j] == 0:
-                return False # means that inputted grid is bad
-            if len(pos[i][j]) == 1:
-                grid[i][j] = pos[i][j][0]
-                return grid;
-
-    for i in range(len(grid)):
-        for j in range(len(grid)):
-            if grid[i][j] == 0:
-                print(pos[i][j])
-                for xxx in pos[i][j]:
-                    grid[i][j] = xxx
-                    temp = solve(grid)
-                    if check_sudoku(temp):
-                        return grid
-                grid[i][j] = 0
-
-    return grid
-
-
-
-def solved(grid):
-    for x in grid:
-        for y in x:
-            if y == 0:
-                return False
-    return True
-
-def determinePossiblities(grid):
+def determinePossibilities(grid):
     rows = []
     for i in range(len(grid)):
         rows.append(determine_rows(grid, i))
@@ -134,6 +37,103 @@ def determinePossiblities(grid):
         pos.append(temp)
     return pos
 
+
+def check_dups(l):
+    counts = Counter()
+    for cell in l:
+        if cell != 0: counts[cell] += 1
+        if cell > 9 or counts[cell] > 1: return False
+    return True
+
+def check_sudoku(grid):
+    if len(grid) != 9: return False
+    if sum(len(row) == 9 for row in grid) != 9: return False
+    for row in grid:
+        if not check_dups(row): return False
+    return True
+
+def determine_rows(grid, i):
+    ret = []
+    for j in grid[i]:
+        if j != 0:
+            ret.append(j)
+    return ret
+
+def determine_cols(grid, i):
+    ret = []
+    for j in range(len(grid)):
+        if grid[j][i] != 0:
+            ret.append(grid[j][i])
+    return ret
+
+def sudoku_solver(grid):
+    solved_grid = solve(grid)
+    return solved_grid
+
+def solve(grid):
+    while not solved(grid):
+        pos = determinePossibilities(grid)
+        # first look for positions that only have 1 possibility
+        updated = False
+
+        if check_sudoku(grid) == False:
+            return False
+
+        for i in range(len(grid)):
+            for j in range(len(grid)):
+                if len(pos[i][j]) == 0 and grid[i][j] == 0:
+                    return False
+                if len(pos[i][j]) == 1:
+                    grid[i][j] = pos[i][j][0]
+                    updated = True
+        if not updated:
+            # check one path...
+            for i in range(len(grid)):
+                for j in range(len(grid)):
+                    if grid[i][j] == 0:
+                        for xxx in pos[i][j]:
+                            grid[i][j] = xxx
+                            temp = solve(grid)
+                            if temp:
+                                return grid
+                            else:
+                                grid[i][j] = 0
+    return grid
+
+def one_step(grid):
+    pos = determinePossibilities(grid)
+    if check_sudoku(grid) == False:
+        return False # means that inputted grid is bad
+
+    for i in range(len(grid)):
+        for j in range(len(grid)):
+            if len(pos[i][j]) == 0 and grid[i][j] == 0:
+                return False # means that inputted grid is bad
+            if len(pos[i][j]) == 1:
+                grid[i][j] = pos[i][j][0]
+                return grid;
+
+    for i in range(len(grid)):
+        for j in range(len(grid)):
+            if grid[i][j] == 0:
+                print(pos[i][j])
+                for xxx in pos[i][j]:
+                    grid[i][j] = xxx
+                    temp = solve(grid)
+                    if check_sudoku(temp):
+                        return grid
+                grid[i][j] = 0
+
+    return grid
+
+
+
+def solved(grid):
+    for x in grid:
+        for y in x:
+            if y == 0:
+                return False
+    return True
 
 def get_hint(grid):
     pos = determinePossibilities(grid)
@@ -174,9 +174,11 @@ example_sudoku = [
 ]
 
 solution = sudoku_solver(example_sudoku)
+solution = one_step(example_sudoku)
 
 # solving = example_sudoku
 # while not solved(solving):
 #     solving = one_step(solving)
 
-print(solving)
+print(solution)
+

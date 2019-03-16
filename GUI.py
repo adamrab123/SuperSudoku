@@ -1,5 +1,7 @@
 import argparse
 
+import sudoku as sud
+
 from Tkinter import Tk, Canvas, Frame, Button, BOTH, TOP, BOTTOM
 
 MARGIN = 20  # Pixels around the board
@@ -31,8 +33,13 @@ class SudokuUI(Frame):
                               command=self.__clear_answers)
         clear_button.pack(fill=BOTH, side=BOTTOM)
         solve_button = Button(self,
-                              text="Solve")
+                              text="Solve",
+                              command = self.__solve)
         solve_button.pack(fill=BOTH, side=BOTTOM)
+        hint_button = Button(self,
+                              text="hint",
+                              command = self.__hint)
+        hint_button.pack(fill=BOTH, side=BOTTOM)
 
         self.__draw_grid()
         self.__draw_puzzle()
@@ -137,8 +144,23 @@ class SudokuUI(Frame):
         self.canvas.delete("victory")
         self.__draw_puzzle()
 
-    def __solve__(self):
+    def __solve(self):
+    	# print("we need to figure this out")
+    	self.game.puzzle = sud.sudoku_solver(self.game.puzzle)
+
+    	self.__draw_puzzle()
+    	if self.game.check_win():
+            self.__draw_victory()
+
+    def __hint(self):
     	print("we need to figure this out")
+
+    	self.game.puzzle = sud.one_step(self.game.puzzle)
+
+    	self.__draw_puzzle()
+    	if self.game.check_win():
+            self.__draw_victory()
+    	# print(hint)
 
 
 class SudokuBoard(object):
