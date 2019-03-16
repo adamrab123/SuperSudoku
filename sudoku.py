@@ -111,7 +111,7 @@ def one_step(grid):
                 return None # means that inputted grid is bad
             if len(pos[i][j]) == 1:
                 grid[i][j] = pos[i][j][0]
-                return grid;
+                return grid
 
     for i in range(len(grid)):
         for j in range(len(grid)):
@@ -135,6 +135,28 @@ def solved(grid):
                 return False
     return True
 
+def get_best_hint(grid):
+    if check_sudoku(grid) == False:
+        return False  # means that inputted grid is bad
+    frequency = {}
+    for i in (1, 10):
+        frequency[i] = 0
+    
+    for row in grid:
+        for num in grid:
+            frequency[num] = frequency[num] + 1
+
+    least_frequent_number = min(frequency, key=frequency.get)
+
+    temp = solve(grid)
+    for i in len(temp):
+        for j in len(temp[i]):
+            if least_frequent_number == temp[i][j]:
+                return (least_frequent_number, i, j)
+    return None
+
+
+
 def get_hint(grid):
     pos = determinePossibilities(grid)
     if check_sudoku(grid) == False:
@@ -146,7 +168,7 @@ def get_hint(grid):
                 return False # means that inputted grid is bad
             if len(pos[i][j]) == 1:
                 grid[i][j] = pos[i][j][0]
-                return (i,j);
+                return (i,j)
 
     for i in range(len(grid)):
         for j in range(len(grid)):
