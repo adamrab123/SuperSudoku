@@ -1,4 +1,18 @@
+from collections import Counter
 
+def check_dups(l):
+    counts = Counter()
+    for cell in l:
+        if cell != 0: counts[cell] += 1
+        if cell > 9 or counts[cell] > 1: return False
+    return True
+
+def check_sudoku(grid):
+    if len(grid) != 9: return False
+    if sum(len(row) == 9 for row in grid) != 9: return False
+    for row in grid:
+        if not check_dups(row): return False
+    return True
 
 def determine_rows(grid, i):
     ret = []
@@ -23,6 +37,10 @@ def solve(grid):
         pos = determinePossiblities(grid)
         # first look for positions that only have 1 possibility
         updated = False
+
+        if check_sudoku(grid) == False:
+            return False
+
         for i in range(len(grid)):
             for j in range(len(grid)):
                 if len(pos[i][j]) == 0 and grid[i][j] == 0:
@@ -35,7 +53,6 @@ def solve(grid):
             for i in range(len(grid)):
                 for j in range(len(grid)):
                     if grid[i][j] == 0:
-                        print(pos[i][j])
                         for xxx in pos[i][j]:
                             grid[i][j] = xxx
                             temp = solve(grid)
@@ -44,6 +61,34 @@ def solve(grid):
                             else:s
                         grid[i][j] = 0
     return grid
+
+def one_step(grid):
+    pos = determinePossibilities(grid)
+    if check_sudoku(grid) == False:
+        return False # means that inputted grid is bad
+
+    for i in range(len(grid)):
+        for j in range(len(grid)):
+            if len(pos[i][j]) == 0 and grid[i][j] == 0:
+                return False # means that inputted grid is bad
+            if len(pos[i][j]) == 1:
+                grid[i][j] = pos[i][j][0]
+                return grid;
+
+    for i in range(len(grid)):
+        for j in range(len(grid)):
+            if grid[i][j] == 0:
+                print(pos[i][j])
+                for xxx in pos[i][j]:
+                    grid[i][j] = xxx
+                    temp = solve(grid)
+                    if check_sudoku(temp):
+                        return grid
+                grid[i][j] = 0
+
+    return grid
+
+
 
 def solved(grid):
     for x in grid:
@@ -91,9 +136,32 @@ def determinePossiblities(grid):
 
 
 def get_hint(grid):
+    pos = determinePossibilities(grid)
+    if check_sudoku(grid) == False:
+        return False # means that inputted grid is bad
+
+    for i in range(len(grid)):
+        for j in range(len(grid)):
+            if len(pos[i][j]) == 0 and grid[i][j] == 0:
+                return False # means that inputted grid is bad
+            if len(pos[i][j]) == 1:
+                grid[i][j] = pos[i][j][0]
+                return (i,j);
+
+    for i in range(len(grid)):
+        for j in range(len(grid)):
+            if grid[i][j] == 0:
+                print(pos[i][j])
+                for xxx in pos[i][j]:
+                    grid[i][j] = xxx
+                    temp = solve(grid)
+                    if check_sudoku(temp):
+                        return (i,j)
+                grid[i][j] = 0
+
     return None
 
-grid = [
+example_sudoku = [
     [0, 0, 0, 0, 0, 0, 7, 0, 1],
     [6, 8, 0, 0, 7, 0, 0, 9, 0],
     [1, 9, 0, 0, 0, 4, 5, 0, 0],
@@ -105,4 +173,10 @@ grid = [
     [7, 0, 3, 0, 1, 8, 0, 0, 0]
 ]
 
-print(sudoku_solver(grid))
+solution = sudoku_solver(example_sudoku)
+
+# solving = example_sudoku
+# while not solved(solving):
+#     solving = one_step(solving)
+
+print(solving)
