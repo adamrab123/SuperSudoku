@@ -301,11 +301,6 @@ for cell in cells:
 	cv2.imwrite("test/image%d.jpg" % i, cell)
 	i += 1
 
-# SUDOKU HAS GOOD IMAGE
-
-# CELLS SHOULD CONTAIN THE CELLS?
-# https://github.com/prajwalkr/SnapSudoku/blob/master/scripts/sudokuExtractor.py
-
 cv2.imwrite("image.jpg", sudoku)
 cv2.waitKey()
 cv2.destroyAllWindows()
