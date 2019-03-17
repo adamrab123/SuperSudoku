@@ -296,11 +296,11 @@ print ('done.')
 
 print(len(cells))
 
-i = 0
-for cell in cells:
-	cv2.imwrite("test/image%d.jpg" % i, cell)
-	i += 1
+# i = 0
+# for cell in cells:
+# 	cv2.imwrite("test/image%d.jpg" % i, cell)
+# 	i += 1
 
 cv2.imwrite("image.jpg", sudoku)
-cv2.waitKey()
-cv2.destroyAllWindows()
+# cv2.waitKey()
+# cv2.destroyAllWindows()

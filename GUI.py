@@ -181,7 +181,7 @@ class SudokuUI(Frame):
     		self.col += 1
     		self.__draw_cursor()
     	if event.char == '\x7f':
-    		self.game.puzzle[self.row][self.col] = ""
+    		self.game.puzzle[self.row][self.col] = 0
     		self.__draw_puzzle()
         if self.game.game_over:
             return
