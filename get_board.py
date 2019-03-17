@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import Queue
 
-im = cv2.imread("source.jpeg")
+im = cv2.imread("sudoku1.png")
 
 class Digit(object):
     '''
