@@ -5,11 +5,17 @@ from time import sleep
 
 import sudoku as sud
 
+# import ttk
+# import Tkinter
 from Tkinter import Tk, Canvas, Frame, Button, BOTH, TOP, BOTTOM
 
 MARGIN = 20  # Pixels around the board
 SIDE = 50  # Width of every board cell.
 WIDTH = HEIGHT = MARGIN * 2 + SIDE * 9  # Width and height of the whole board
+
+# LARGE_FONT= ("Verdana", 12)
+# NORM_FONT = ("Helvetica", 10)
+# SMALL_FONT = ("Helvetica", 8)
 
 class SudokuUI(Frame):
     """
@@ -21,7 +27,7 @@ class SudokuUI(Frame):
         self.parent = parent
 
         self.row, self.col = -1, -1
-
+    	# self.__popupmsg("hi")
         self.__initUI()
 
     def __initUI(self):
@@ -95,6 +101,15 @@ class SudokuUI(Frame):
                 x0, y0, x1, y1,
                 outline="red", tags="cursor"
             )
+
+    # def __popupmsg(self,msg):
+	   #  popup = Tkinter.Tk()
+	   #  popup.wm_title("!")
+	   #  label = ttk.Label(popup, text=msg, font=NORM_FONT)
+	   #  label.pack(side="top", fill="x", pady=10)
+	   #  B1 = ttk.Button(popup, text="Okay", command = popup.destroy)
+	   #  B1.pack()
+	   #  popup.mainloop()
 
     def __draw_victory(self):
         # create a oval (which will be a circle)
