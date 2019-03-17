@@ -1,15 +1,9 @@
 import argparse
 from time import sleep
-# from msvcrt import getch
-
 import copy
 import sudoku as sud
-
-# import ttk
-# import Tkinter
-from Tkinter import Tk, Canvas, Frame, Button, BOTH, TOP, BOTTOM
+from Tkinter import Tk, Canvas, Frame, Button, BOTH, TOP, BOTTOM, LEFT, RIGHT
 from Tkinter import *
-
 import random
 
 MARGIN = 20  # Pixels around the board
@@ -41,27 +35,26 @@ class SudokuUI(Frame):
                              height=HEIGHT)
         self.canvas.pack(fill=BOTH)
 
-        clear_button = Button(self,
+        clear_button = Button(self, padx=50,
                               text="Clear answers",
                               command=self.__clear_answers)
-        clear_button.pack(fill=BOTH, side=BOTTOM)
-        solve_button = Button(self,
-                              text="BEST hint",
-                              command = self.__solve)
-        solve_button.pack(fill=BOTH, side=BOTTOM)
-        hint_better_button = Button(self,
-                             text="Better hint",
-                             command=self.__better_hint)
-        hint_better_button.pack(fill=BOTH, side=BOTTOM)
-        hint_button = Button(self,
-                              text="Hint",
-                              command = self.__hint)
-        hint_button.pack(fill=BOTH, side=BOTTOM)
-        undoOne = Button(self,
-                              text="Undo",
+        clear_button.pack(fill=BOTH, side=LEFT)
+        undoOne = Button(self, text="Undo",
                               command = self.undo)
-        undoOne.pack(fill=BOTH, side=BOTTOM)
+        undoOne.pack(fill=BOTH, side=LEFT)
 
+        
+        
+        hint_button = Button(self, text="Hint",
+                              command = self.__hint)
+        hint_button.pack(fill=BOTH, side=LEFT)
+        hint_better_button = Button(self, text="Better hint",
+                             command=self.__better_hint)
+        hint_better_button.pack(fill=BOTH, side=LEFT)
+        solve_button = Button(self, text="BEST hint",
+                              command = self.__solve)
+        solve_button.pack(fill=BOTH, side=LEFT)
+        
 
         self.__draw_grid()
         self.__draw_puzzle()
@@ -362,10 +355,10 @@ if __name__ == '__main__':
 
     board_name = "debug"
 
-   
-
     root = Tk()
     root.canvas = Canvas(width=WIDTH, height=HEIGHT)
+    # root.title("hi")
+    # root.pack()
 
     button = Button(root, text="Easy", command=commandEasy)
     button.pack()
@@ -374,6 +367,8 @@ if __name__ == '__main__':
     button = Button(root, text="Hard", command=commandHard)
     button.pack()
 
+
+
     root.mainloop()
 
     fileNum = random.randint(1,10)
@@ -381,10 +376,6 @@ if __name__ == '__main__':
 
     path = choice + "/" + choice + str(fileNum) + ".txt"
     print(path)
-
-
-
-
 
     root = Tk()
 
