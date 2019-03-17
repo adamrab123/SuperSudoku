@@ -1,4 +1,5 @@
 from collections import Counter
+from copy import deepcopy
 
 def determinePossibilities(grid):
     rows = []
@@ -138,20 +139,18 @@ def solved(grid):
 def get_best_hint(grid):
     if check_sudoku(grid) == False:
         return False  # means that inputted grid is bad
-    frequency = {}
-    for i in (1, 10):
-        frequency[i] = 0
-    
+    frequency = {x: 0 for x in range(1, 10)}
     for row in grid:
-        for num in grid:
-            frequency[num] = frequency[num] + 1
+        for num in row:
+            if num != 0:
+                frequency[num] = frequency[num] + 1
 
     least_frequent_number = min(frequency, key=frequency.get)
 
-    temp = solve(grid)
-    for i in len(temp):
-        for j in len(temp[i]):
-            if least_frequent_number == temp[i][j]:
+    temp = solve(deepcopy(grid))
+    for i in range(len(temp)):
+        for j in range(len(temp[i])):
+            if least_frequent_number == temp[i][j] and grid[i][j] != least_frequent_number:
                 return (least_frequent_number, i, j)
     return None
 

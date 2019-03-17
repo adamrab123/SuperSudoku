@@ -43,6 +43,10 @@ class SudokuUI(Frame):
                               text="hint",
                               command = self.__hint)
         hint_button.pack(fill=BOTH, side=BOTTOM)
+        hint_better_button = Button(self,
+                             text="better hint",
+                             command=self.__better_hint)
+        hint_better_button.pack(fill=BOTH, side=BOTTOM)
 
         self.__draw_grid()
         self.__draw_puzzle()
@@ -209,6 +213,16 @@ class SudokuUI(Frame):
             self.__draw_victory()
     	# print(hint)
 
+    def __better_hint(self):
+        sol = sud.get_best_hint(self.game.puzzle)
+        if sol == None:
+            return
+        
+    	self.game.puzzle[sol[1]][sol[2]] = sol[0]
+        
+    	self.__draw_puzzle()
+    	if self.game.check_win():
+            self.__draw_victory()
 
 class SudokuBoard(object):
     """
