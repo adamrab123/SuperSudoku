@@ -182,6 +182,45 @@ def get_hint(grid):
 
     return None
 
+def getColumn(grid,i):
+    sol = []
+    for row in grid:
+        sol.append(row[i])
+    return sol
+
+def checkMistake(grid):
+    for row in grid:
+        for num in list(range(1,10)):
+            count = row.count(num)
+            if count > 1:
+                return True
+    for i in range(len(grid)):
+        column = getColumn(grid,i)
+        # print(column)
+        for num in list(range(1,10)):
+            count = column.count(num)
+            if count > 1:
+                return True
+    for i in list(range(0,9,3)):
+        for j in list(range(0,9,3)):
+            box = []
+            box.append(grid[i][j])
+            box.append(grid[i][j+1])
+            box.append(grid[i][j+2])
+            box.append(grid[i+1][j])
+            box.append(grid[i+1][j+1])
+            box.append(grid[i+1][j+2])
+            box.append(grid[i+2][j])
+            box.append(grid[i+2][j+1])
+            box.append(grid[i+2][j+2])
+            for num in list(range(1,10)):
+                count = box.count(num)
+                if count > 1:
+                    return True
+
+    return False
+
+
 example_sudoku = [
     [0, 0, 0, 0, 0, 0, 7, 0, 1],
     [6, 8, 0, 0, 7, 0, 0, 9, 0],
@@ -190,9 +229,12 @@ example_sudoku = [
     [0, 0, 4, 6, 0, 2, 9, 0, 0],
     [0, 5, 0, 0, 0, 3, 0, 2, 8],
     [0, 0, 9, 3, 0, 0, 0, 7, 4],
-    [0, 4, 0, 0, 5, 0, 0, 3, 6],
+    [0, 4, 7, 0, 5, 0, 0, 3, 6],
     [7, 0, 3, 0, 1, 8, 0, 0, 0]
 ]
+
+print(checkMistake(example_sudoku))
+# prit(getColumn(example_sudoku,0))
 
 # solution = sudoku_solver(example_sudoku)
 # solution = one_step(example_sudoku)

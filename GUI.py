@@ -2,12 +2,15 @@ import argparse
 from time import sleep
 # from msvcrt import getch
 
-
+import copy
 import sudoku as sud
 
 # import ttk
 # import Tkinter
 from Tkinter import Tk, Canvas, Frame, Button, BOTH, TOP, BOTTOM
+from Tkinter import *
+
+import random
 
 MARGIN = 20  # Pixels around the board
 SIDE = 50  # Width of every board cell.
@@ -32,27 +35,33 @@ class SudokuUI(Frame):
 
     def __initUI(self):
         self.parent.title("Sudoku")
-        self.pack(fill=BOTH)
+        self.pack()
         self.canvas = Canvas(self,
                              width=WIDTH,
                              height=HEIGHT)
-        self.canvas.pack(fill=BOTH, side=TOP)
+        self.canvas.pack(fill=BOTH)
+
         clear_button = Button(self,
                               text="Clear answers",
                               command=self.__clear_answers)
         clear_button.pack(fill=BOTH, side=BOTTOM)
         solve_button = Button(self,
-                              text="Solve",
+                              text="BEST hint",
                               command = self.__solve)
         solve_button.pack(fill=BOTH, side=BOTTOM)
-        hint_button = Button(self,
-                              text="hint",
-                              command = self.__hint)
-        hint_button.pack(fill=BOTH, side=BOTTOM)
         hint_better_button = Button(self,
-                             text="better hint",
+                             text="Better hint",
                              command=self.__better_hint)
         hint_better_button.pack(fill=BOTH, side=BOTTOM)
+        hint_button = Button(self,
+                              text="Hint",
+                              command = self.__hint)
+        hint_button.pack(fill=BOTH, side=BOTTOM)
+        undoOne = Button(self,
+                              text="Undo",
+                              command = self.undo)
+        undoOne.pack(fill=BOTH, side=BOTTOM)
+
 
         self.__draw_grid()
         self.__draw_puzzle()
@@ -187,9 +196,11 @@ class SudokuUI(Frame):
             return
         if self.row >= 0 and self.col >= 0 and event.char in "123456789":
             self.game.puzzle[self.row][self.col] = int(event.char)
-            if sud.check_sudoku(self.game.puzzle) == False:
+            if sud.checkMistake(self.game.puzzle) == True:
+                self.game.lastLoc = [self.row,self.col]
+                self.__draw_puzzle()
             	self.__draw_mistake()
-            	# self.__draw_puzzle()
+
             	# self.__draw_cursor()
             	# sleep(2)
             	# self.canvas.delete("mistake")
@@ -202,9 +213,18 @@ class SudokuUI(Frame):
 	            	self.__draw_cursor()
 	                self.__draw_victory()
 
+    def undo(self):
+        if(len(self.game.lastLoc) > 0):
+            row,col = self.game.lastLoc[0],self.game.lastLoc[1]
+            self.game.puzzle[row][col] = 0
+            self.canvas.delete("mistake")
+        self.__draw_puzzle()
+
+
     def __clear_answers(self):
         self.game.start()
         self.canvas.delete("victory")
+        self.canvas.delete("mistake")
         self.__draw_puzzle()
 
     def __solve(self):
@@ -279,6 +299,8 @@ class SudokuGame(object):
 
     def start(self):
         self.game_over = False
+        self.lastLoc = []
+        # self.lastNum = 0
         self.puzzle = []
         for i in xrange(9):
             self.puzzle.append([])
@@ -323,13 +345,56 @@ class SudokuGame(object):
 if __name__ == '__main__':
     # board_name = parse_arguments()
 
+    choice = ""
+
+    def commandEasy():
+        global choice
+        choice = "easy"
+        root.destroy()
+    def commandMed():
+        global choice
+        choice = "medium"
+        root.destroy()
+    def commandHard():
+        global choice
+        choice = "hard" 
+        root.destroy()
+
     board_name = "debug"
 
-    boards_file = open('%s.sudoku' % board_name, 'r')
+   
+
+    root = Tk()
+    root.canvas = Canvas(width=WIDTH, height=HEIGHT)
+
+    button = Button(root, text="Easy", command=commandEasy)
+    button.pack()
+    button = Button(root, text="Medium", command=commandMed)
+    button.pack()
+    button = Button(root, text="Hard", command=commandHard)
+    button.pack()
+
+    root.mainloop()
+
+    fileNum = random.randint(1,10)
+    print(fileNum)
+
+    path = choice + "/" + choice + str(fileNum) + ".txt"
+    print(path)
+
+
+
+
+
+    root = Tk()
+
+    boards_file = open(path, 'r')
+    print(boards_file)
     game = SudokuGame(boards_file)
     game.start()
 
-    root = Tk()
+
+
     SudokuUI(root, game)
     root.geometry("%dx%d" % (WIDTH, HEIGHT + 40))
     root.mainloop()
