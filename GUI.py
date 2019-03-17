@@ -5,6 +5,7 @@ import sudoku as sud
 from Tkinter import Tk, Canvas, Frame, Button, BOTH, TOP, BOTTOM, LEFT, RIGHT
 from Tkinter import *
 import random
+import os
 
 MARGIN = 20  # Pixels around the board
 SIDE = 50  # Width of every board cell.
@@ -28,7 +29,7 @@ class SudokuUI(Frame):
         self.__initUI()
 
     def __initUI(self):
-        self.parent.title("Sudoku")
+        self.parent.title("Super Sudoku")
         self.pack()
         self.canvas = Canvas(self,
                              width=WIDTH,
@@ -67,7 +68,7 @@ class SudokuUI(Frame):
         Draws grid divided with blue lines into 3x3 squares
         """
         for i in xrange(10):
-            color = "blue" if i % 3 == 0 else "gray"
+            color = "red" if i % 3 == 0 else "gray"
 
             x0 = MARGIN + i * SIDE
             y0 = MARGIN
@@ -352,12 +353,26 @@ if __name__ == '__main__':
         global choice
         choice = "hard" 
         root.destroy()
+    def commandPic():
+        global choice
+        choice = "pic" 
+        root.destroy()
 
     board_name = "debug"
 
     root = Tk()
     root.canvas = Canvas(width=WIDTH, height=HEIGHT)
-    # root.title("hi")
+    root.geometry("%dx%d" % (WIDTH, HEIGHT + 80))
+    root.title("Super Sudoku")
+    text = Text(root,state=NORMAL)
+    message = "Hello, and welcome to Super Sudoku! This application is intended to " +\
+        "allow individuals with physical impairments (e.g. MS) to enjoy playing the " +\
+        " wonderful game of Sudoku. Please refer to the following instructions: \n \n" +\
+        "1) Please select a difficulty from the options below \n" +\
+        "2) After the user selects a difficulty, they are displayed an example sudoku " +\
+            "board. They then have the following options to input data" 
+    text.insert(INSERT, message)
+    text.pack()
     # root.pack()
 
     button = Button(root, text="Easy", command=commandEasy)
@@ -366,6 +381,10 @@ if __name__ == '__main__':
     button.pack()
     button = Button(root, text="Hard", command=commandHard)
     button.pack()
+    button = Button(root, text="Picture", command=commandPic)
+    button.pack()
+
+    
 
 
 
@@ -379,13 +398,16 @@ if __name__ == '__main__':
 
     root = Tk()
 
-    boards_file = open(path, 'r')
+    if choice == "pic":
+        os.system("python3 all.py")
+        boards_file = open('file.txt', 'r')
+    else:
+        boards_file = open(path, 'r')
     print(boards_file)
     game = SudokuGame(boards_file)
     game.start()
 
 
-
     SudokuUI(root, game)
-    root.geometry("%dx%d" % (WIDTH, HEIGHT + 40))
+    root.geometry("%dx%d" % (WIDTH, HEIGHT + 80))
     root.mainloop()

@@ -100,7 +100,7 @@ def pre_process_image(img, skip_dilate=False):
 
 def find_corners_of_largest_polygon(img):
 	"""Finds the 4 extreme corners of the largest contour in the image."""
-	_, contours, h = cv2.findContours(img.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)  # Find contours
+	contours, h = cv2.findContours(img.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)  # Find contours
 	contours = sorted(contours, key=cv2.contourArea, reverse=True)  # Sort by area, descending
 	polygon = contours[0]  # Largest image
 
@@ -317,10 +317,12 @@ def parse_grid(path):
 		if (np.sum(digits[i]) > 0):
 			nums[i] = y[j]
 			j +=1
-	print(nums.reshape([9,9]))
+	# print(nums)
+	# for
+	np.savetxt("file.txt", nums.reshape([9,9]), fmt='%d', delimiter = "")
 
 def main():
-	parse_grid('test.jpg')
+	parse_grid('sudoku1.png')
 
 if __name__ == '__main__':
 	main()
